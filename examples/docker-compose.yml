@@ -1,0 +1,15 @@
+version: '2'
+services:
+  web:
+    image: nginx
+    restart: unless-stopped
+    labels:
+      - "traefik.frontend.rule=Host:app1.192.168.99.100.xip.io"
+      - "traefik.backend=app1"
+      - "traefik.port=80"
+      - "traefik.frontend.entryPoints=http"
+
+networks:
+  default:
+    external:
+      name: skynet

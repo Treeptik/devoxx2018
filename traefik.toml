@@ -1,0 +1,19 @@
+# traefik.toml
+################################################################
+# Global configuration
+################################################################
+
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[web]
+address = ":8080"
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "192.168.99.100.xip.io"
+watch = true
+exposedbydefault = true

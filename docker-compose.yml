@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+  traefik:
+    container_name: traefik
+    image: traefik
+    ports:
+      - "80:80"
+      - "9090:8080"
+      - "443:443"
+    volumes:
+      - "$PWD/traefik.toml:/etc/traefik/traefik.toml"
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      - "traefik.frontend.rule=Host:traefik.${HOSTNAME}"
+      - "traefik.backend=traefik"
+      - "traefik.frontend.entryPoints=http"
+
+  jenkins:
+     container_name: jenkins
+     image: treeptik/jenkins
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - jenkins-home:/var/jenkins_home
+     restart: unless-stopped
+     environment:
+       - "TZ=${TZ}"
+       - "JAVA_ARGS=-Xmx1024m -XX:MaxPermSize=512m -Djava.awt.headless=true"
+     labels:
+       - "traefik.frontend.rule=Host:jenkins.${HOSTNAME}"
+       - "traefik.port=8080"
+       - "traefik.backend=jenkins"
+       - "traefik.frontend.entryPoints=http"
+
+  gitlab:
+    container_name: gitlab
+    image: gitlab/gitlab-ce:10.2.1-ce.0
+    hostname: 'gitlab.${HOSTNAME}'
+    restart: unless-stopped
+    volumes:
+      - gitlab-conf:/etc/gitlab
+      - gitlab-log:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+    labels:
+      - "traefik.frontend.rule=Host:gitlab.${HOSTNAME}"
+      - "traefik.port=80"
+      - "traefik.backend=gitlab"
+      - "traefik.frontend.entryPoints=http"
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    restart: unless-stopped
+    labels:
+      - "traefik.frontend.rule=Host:portainer.${HOSTNAME}"
+      - "traefik.port=9000"
+      - "traefik.backend=portainer"
+      - "traefik.frontend.entryPoints=http"
+    volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  jenkins-home:
+  gitlab-conf:
+  gitlab-data:
+  gitlab-log:
+
+networks:
+  default:
+    external:
+      name: skynet

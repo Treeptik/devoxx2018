@@ -1,0 +1,27 @@
+pipeline {
+	agent any
+	triggers { pollSCM('*/1 * * * *') }
+
+	stages {
+		stage('checkout') {
+			steps {
+				checkout scm
+			}
+		}
+		stage('environment') {
+			steps {
+			    sh 'docker version'
+			    sh 'docker info'
+			    sh 'docker-compose version'
+					sh 'pwd'
+			    sh 'ls .'
+			}
+		}
+		stage('build & publish') {
+			steps {
+					sh 'docker-compose kill && docker-compose rm -f'
+					sh 'docker-compose up -d'					
+			}
+		}
+	}
+}
