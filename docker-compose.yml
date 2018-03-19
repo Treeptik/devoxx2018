@@ -21,6 +21,7 @@ services:
      container_name: jenkins
      image: treeptik/jenkins
      volumes:
+       - /usr/bin/docker:/usr/bin/docker
        - /var/run/docker.sock:/var/run/docker.sock
        - jenkins-home:/var/jenkins_home
      restart: unless-stopped
