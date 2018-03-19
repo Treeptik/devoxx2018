@@ -8,6 +8,10 @@ cp -f .env.template .env
 PATTERN="s/#IP#/$PUBLIC_IP/"
 sed -i $PATTERN .env
 
+cp -f traefik.toml.template traefik.toml
+PATTERN="s/#IP#/$PUBLIC_IP/"
+sed -i $PATTERN traefik.toml
+
 # Start Docker Stack
 docker network create skynet
 docker-compose up -d

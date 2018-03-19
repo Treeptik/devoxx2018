@@ -14,6 +14,6 @@ address = ":8080"
 
 [docker]
 endpoint = "unix:///var/run/docker.sock"
-domain = "178.62.47.154.xip.io"
+domain = "#IP#.xip.io"
 watch = true
 exposedbydefault = true
