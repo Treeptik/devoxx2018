@@ -24,7 +24,9 @@ services:
        - /usr/bin/docker:/usr/bin/docker
        - /var/run/docker.sock:/var/run/docker.sock
        - jenkins-home:/var/jenkins_home
+       - /btrfs:/btrfs
      restart: unless-stopped
+     privileged: true
      environment:
        - "TZ=${TZ}"
        - "JAVA_ARGS=-Xmx1024m -XX:MaxPermSize=512m -Djava.awt.headless=true"
