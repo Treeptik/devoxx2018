@@ -15,3 +15,9 @@ sed -i $PATTERN traefik.toml
 # Start Docker Stack
 docker network create skynet
 docker-compose up -d
+
+echo ""
+echo "Portainer: http://portainer.${PUBLIC_IP}.xip.io"
+echo "Jenkins  : http://jenkins.${PUBLIC_IP}.xip.io"
+echo "Gitlab   : http://gitlab.${PUBLIC_IP}.xip.io"
+echo ""
