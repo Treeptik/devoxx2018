@@ -45,3 +45,40 @@ docker build --build-arg GID=1000 -t treeptik/jenkins jenkins
 ```
 ./startup.sh
 ```
+
+# Configuration GitLab & Jenkins
+
+Il faut créer un nouveau projet dans GitLab issue du projet GitHub public.
+Egalement créer un job multibuild pipeline basé sur le projet github
+
+# Préparer les données 
+
+## Création des données de référence
+
+```
+mkdir /btrfs/pg-data
+```
+
+## Lancer le container pour provisionner les données
+
+```
+docker run --name postgres-srv \
+			-e POSTGRES_PASSWORD=mysecretpassword \
+			-v /btrfs/pg-data:/var/lib/postgresql/data \
+			-v `pwd`/scripts/users.sql:/opt/scripts/users.sql \
+			-d postgres
+
+docker exec -it postgres-srv bash
+
+container> psql -U postgres
+ postgres> \timing
+ postgres> \i /opt/scripts/users.sql
+```
+
+# Création du volume BtrFS
+
+```
+btrfs subvolume create /btrfs/pg-data-ref
+chown -R jenkins:jenkins /btrfs/pg-data-ref/
+```
+
