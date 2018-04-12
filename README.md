@@ -8,22 +8,23 @@ mkfs.btrfs -f /dev/disk/by-id/scsi-0DO_Volume_volume-devoxx2018
 
 ## Montage temporaire
 ```
-mkdir /mnt/volume-devoxx2018
-mount -o defaults,discard /dev/disk/by-id/scsi-0DO_Volume_volume-devoxx2018 /mnt/volume-devoxx2018/
+mkdir /mnt/btrfs
+mount -o defaults,discard /dev/disk/by-id/scsi-0DO_Volume_volume-devoxx2018 /mnt/btrfs/
 ```
 
 ## Test avec un fichier
 ```
 df -h -x tmpfs -x devtmpfs
-echo "success"  | sudo tee /mnt/volume-devoxx2018/test
-cat /mnt/volume-devoxx2018/test
+echo "success"  | sudo tee /mnt/btrfs/test
+cat /mnt/btrfs/test
+rm -f /mnt/btrfs/test
 ```
 
 ## Montage permanent
 ```
-umount /mnt/volume-devoxx2018
+umount /mnt/btrfs
 vi /etc/fstab
-echo "/dev/disk/by-id/scsi-0DO_Volume_volume-devoxx2018 /mnt/volume-devoxx2018 btrfs defaults,nofail,discard 0 2" >> /etc/fstab
+echo "/dev/disk/by-id/scsi-0DO_Volume_volume-devoxx2018 /mnt/btrfs btrfs defaults,nofail,discard 0 2" >> /etc/fstab
 mount -a
 df -h -x tmpfs -x devtmpfs
 ```
@@ -59,7 +60,7 @@ Egalement créer un job multibuild pipeline basé sur le projet github
 ## Création des données de référence
 
 ```
-mkdir /btrfs/pg-data
+mkdir /mnt/btrfs/pg-data
 ```
 
 ## Lancer le container pour provisionner les données
@@ -67,7 +68,7 @@ mkdir /btrfs/pg-data
 ```
 docker run --name postgres-srv \
 			-e POSTGRES_PASSWORD=mysecretpassword \
-			-v /btrfs/pg-data:/var/lib/postgresql/data \
+			-v /mnt/btrfs/pg-data:/var/lib/postgresql/data \
 			-v `pwd`/scripts/users.sql:/opt/scripts/users.sql \
 			-d postgres
 
@@ -81,7 +82,7 @@ container> psql -U postgres
 ## Création du volume BtrFS
 
 ```
-btrfs subvolume create /btrfs/pg-data-ref
-chown -R jenkins:jenkins /btrfs/pg-data-ref/
+btrfs subvolume create /mnt/btrfs/pg-data-ref
+chown -R jenkins:jenkins /mnt/btrfs/pg-data-ref/
 ```
 
