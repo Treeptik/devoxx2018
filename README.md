@@ -60,7 +60,7 @@ Egalement créer un job multibuild pipeline basé sur le projet github
 ## Création des données de référence
 
 ```
-mkdir /mnt/btrfs/pg-data
+mkdir /mnt/btrfs/pg-data-ref
 ```
 
 ## Lancer le container pour provisionner les données
